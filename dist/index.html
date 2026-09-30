@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ESRA · Reliable evolution for AI agents</title>
+  <meta name="description" content="ESRA is an open architecture for bounded, evidence-driven improvement in AI agents. ESRA Agents is its canonical cross-host implementation.">
+  <meta name="theme-color" content="#07110f">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <style>
+    :root{--ink:#effaf6;--muted:#91a9a1;--bg:#07110f;--panel:#0d1b18;--panel-2:#10231f;--line:#24433a;--acid:#9af7db;--ember:#ff7a45;--gold:#ffd166;--max:1180px;--sans:'Manrope',sans-serif;--mono:'DM Mono',monospace}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{margin:0;color:var(--ink);background:radial-gradient(circle at 78% 8%,rgba(154,247,219,.09),transparent 27rem),linear-gradient(180deg,#07110f 0%,#081412 48%,#050b0a 100%);font:400 1rem/1.65 var(--sans);overflow-x:hidden}
+    body:before{content:'';position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(154,247,219,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(154,247,219,.08) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 60%)}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .shell{width:min(var(--max),calc(100% - 40px));margin:auto;position:relative}
+    nav{height:84px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(145,169,161,.2)}
+    .brand{display:flex;align-items:center;gap:13px;font-weight:800;letter-spacing:.02em}
+    .brand-logo{width:38px;height:38px;display:block;object-fit:contain;filter:drop-shadow(0 0 12px rgba(154,247,219,.16))}
+    .nav-links{display:flex;align-items:center;gap:26px;color:var(--muted);font-size:.9rem}
+    .nav-links a:hover,.nav-links a:focus-visible{color:var(--ink)}
+    .nav-cta,.button{border:1px solid var(--line);border-radius:999px;padding:10px 17px;background:rgba(16,35,31,.72);transition:.2s ease}
+    .nav-cta:hover,.nav-cta:focus-visible,.button:hover,.button:focus-visible{border-color:var(--acid);transform:translateY(-1px)}
+    .github-link{display:inline-flex;align-items:center;gap:8px}.github-link svg{width:18px;height:18px;flex:none;fill:currentColor}
+    .hero{min-height:690px;display:grid;grid-template-columns:1.06fr .94fr;gap:70px;align-items:center;padding:78px 0 94px}
+    .eyebrow,.section-kicker,.label{font:500 .76rem/1.3 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:var(--acid)}
+    h1{margin:20px 0 26px;font-size:clamp(3.6rem,8.4vw,7.7rem);line-height:.88;letter-spacing:-.075em;max-width:780px}
+    h1 span{display:block;color:var(--ember)}
+    .lede{max-width:650px;color:#bdd0ca;font-size:clamp(1.08rem,2vw,1.28rem);line-height:1.6}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+    .button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 20px;font-weight:700}
+    .button.primary{background:var(--acid);border-color:var(--acid);color:#07110f}
+    .button.primary:hover,.button.primary:focus-visible{background:#c3ffed}
+    .micro{margin-top:24px;color:var(--muted);font:400 .78rem/1.6 var(--mono)}
+    .signal{--orbit-outer:min(330px,43%);--orbit-middle:calc(var(--orbit-outer)*.742);--orbit-inner:calc(var(--orbit-outer)*.5);--period-outer:38s;--period-middle:22s;position:relative;width:100%;max-width:768px;aspect-ratio:1;min-height:0;display:grid;place-items:center;justify-self:center}
+    .signal:before,.signal:after{content:'';position:absolute;border:1px solid var(--line);border-radius:50%}
+    .signal:before{width:calc(var(--orbit-outer)*2);height:calc(var(--orbit-outer)*2)}
+    .signal:after{width:calc(var(--orbit-middle)*2);height:calc(var(--orbit-middle)*2);border-style:dashed}
+    .signal-core{width:calc(var(--orbit-inner)*2);height:calc(var(--orbit-inner)*2);border-radius:50%;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 36% 30%,#1c4137,var(--panel) 62%);border:1px solid #477d6e;box-shadow:0 0 70px rgba(154,247,219,.12);z-index:2}
+    .svg-effects{position:absolute;width:0;height:0;overflow:hidden}
+    .signal-core img{display:block;width:156px;height:156px;margin:auto;object-fit:contain;filter:url(#hero-logo-tone)}
+    @property --spin{syntax:'<angle>';inherits:false;initial-value:0deg}
+    .orbit{--theta:calc(var(--start) + var(--spin));position:absolute;left:calc(50% + cos(var(--theta))*var(--radius));top:calc(50% + sin(var(--theta))*var(--radius));z-index:3;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#0a1714;color:#c8d8d3;font:400 .7rem var(--mono);transform:translate(-50%,-50%);animation:orbit-labels var(--period) linear infinite;will-change:left,top}
+    .orbit.outer{--radius:var(--orbit-outer);--period:var(--period-outer)}
+    .orbit.middle{--radius:var(--orbit-middle);--period:var(--period-middle)}
+    .o1{--start:270deg}.o2{--start:315deg}.o3{--start:0deg}.o4{--start:45deg}.o5{--start:90deg}.o6{--start:135deg}.o7{--start:180deg}.o8{--start:225deg}
+    @keyframes orbit-labels{to{--spin:360deg}}
+    .divider{border-top:1px solid rgba(145,169,161,.22)}
+    section{padding:105px 0}
+    .section-head{display:grid;grid-template-columns:.42fr 1fr;gap:40px;align-items:start;margin-bottom:54px}
+    .section-head h2{margin:0;font-size:clamp(2.3rem,5vw,4.8rem);line-height:1.02;letter-spacing:-.055em;max-width:840px}
+    .section-head p{color:var(--muted);max-width:610px;margin:18px 0 0}
+    .duo{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .card{position:relative;min-height:390px;padding:35px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,rgba(16,35,31,.95),rgba(9,22,19,.9));overflow:hidden}
+    .card:after{content:'';position:absolute;width:190px;height:190px;border:1px solid rgba(154,247,219,.16);border-radius:50%;right:-58px;bottom:-74px}
+    .card-number{font:300 4rem/1 var(--mono);color:rgba(154,247,219,.25)}
+    .card h3{margin:76px 0 14px;font-size:2.25rem;letter-spacing:-.045em}.card p{color:#a9beb7;max-width:450px}.card a{display:inline-block;margin-top:24px;color:var(--acid);font:500 .82rem var(--mono);border-bottom:1px solid rgba(154,247,219,.4)}
+    .cycle-wrap{display:grid;grid-template-columns:.72fr 1.28fr;gap:48px;align-items:start}
+    .cycle-copy h2{font-size:clamp(2.4rem,4.4vw,4.4rem);line-height:1;letter-spacing:-.05em;margin:18px 0 22px}.cycle-copy>p{color:var(--muted)}
+    .stage-list{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:34px}
+    .stage{cursor:pointer;text-align:left;border:1px solid var(--line);background:transparent;color:#9fb5ae;border-radius:12px;padding:13px 14px;font:400 .75rem var(--mono);transition:.2s ease}
+    .stage:hover,.stage:focus-visible,.stage.active{border-color:var(--ember);color:var(--ink);background:rgba(255,122,69,.08)}
+    .terminal{border:1px solid #345f53;border-radius:24px;background:#06100e;box-shadow:0 24px 70px rgba(0,0,0,.26);overflow:hidden}
+    .terminal-top{display:flex;gap:7px;padding:17px 20px;border-bottom:1px solid var(--line)}.terminal-top i{display:block;width:8px;height:8px;border-radius:50%;background:#39594f}.terminal-top i:first-child{background:var(--ember)}
+    .terminal-body{min-height:445px;padding:35px;font-family:var(--mono)}
+    .term-path{color:#5d8075;font-size:.78rem}.term-index{color:var(--ember);font-size:.75rem;margin-top:74px}.terminal h3{font:500 clamp(1.8rem,4vw,3.4rem)/1.1 var(--mono);letter-spacing:-.045em;margin:14px 0 22px}.term-text{color:#a9c1b9;max-width:600px}.term-gate{display:flex;justify-content:space-between;gap:20px;margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.72rem}.term-gate strong{color:var(--acid);font-weight:500}
+    .principles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.principle{min-height:190px;padding:25px;border-top:1px solid var(--line);background:rgba(10,23,20,.48)}.principle b{display:block;margin-bottom:36px;color:var(--gold);font:400 .75rem var(--mono)}.principle h3{font-size:1.25rem;margin:0 0 10px}.principle p{font-size:.9rem;color:var(--muted);margin:0}
+    .proof{display:grid;grid-template-columns:1fr 1fr;gap:60px}.proof h2{font-size:clamp(2.5rem,5vw,5.2rem);line-height:.95;letter-spacing:-.06em;margin:16px 0 24px}.proof>div>p{color:var(--muted)}
+    .status-list{border-top:1px solid var(--line)}.status-row{display:grid;grid-template-columns:1fr auto;gap:20px;padding:19px 0;border-bottom:1px solid var(--line);align-items:center}.status-row span:first-child{font-weight:600}.chip{padding:5px 9px;border-radius:999px;font:500 .68rem var(--mono);border:1px solid #3a6358;color:var(--acid)}.chip.open{border-color:#6c5940;color:var(--gold)}
+    .boundary{margin-top:22px;padding:18px 20px;border-left:2px solid var(--ember);background:rgba(255,122,69,.06);color:#c8d8d3;font-size:.9rem}
+    .cta{padding:70px 0 96px}.cta-box{border:1px solid var(--line);border-radius:28px;padding:clamp(35px,7vw,80px);background:linear-gradient(135deg,#10271f,#0b1714 62%);display:grid;grid-template-columns:1.2fr .8fr;gap:50px;align-items:end}.cta h2{font-size:clamp(2.7rem,6vw,6.4rem);line-height:.92;letter-spacing:-.065em;margin:15px 0 0}.cta-copy{color:#adc2bb}.cta-copy .hero-actions{margin-top:26px}
+    footer{padding:30px 0 50px;border-top:1px solid rgba(145,169,161,.22);display:flex;justify-content:space-between;gap:25px;color:var(--muted);font:400 .76rem var(--mono)}
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}.reveal.seen{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.signal:before,.signal:after,.orbit{animation:none}.reveal{opacity:1;transform:none;transition:none}}
+    @media (max-width:850px){.nav-links a:not(.nav-cta){display:none}.hero{grid-template-columns:1fr;padding-top:55px;gap:10px}.signal{transform:scale(.85)}.section-head,.cycle-wrap,.proof,.cta-box{grid-template-columns:1fr}.section-head{gap:18px}.duo{grid-template-columns:1fr}.principles{grid-template-columns:1fr 1fr}.cycle-wrap{gap:40px}.cta-box{align-items:start}}
+    @media (max-width:560px){.shell{width:min(100% - 26px,var(--max))}nav{height:70px}.hero{min-height:auto;padding-bottom:70px}h1{font-size:clamp(3.1rem,19vw,5rem)}.signal{transform:scale(.72);margin:-35px -60px}.card{min-height:330px;padding:26px}.card h3{margin-top:50px}.stage-list,.principles{grid-template-columns:1fr}.terminal-body{padding:26px;min-height:390px}.term-gate{flex-direction:column}.status-row{grid-template-columns:1fr}.chip{justify-self:start}.cta-box{padding:30px 24px}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <svg class="svg-effects" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="hero-logo-tone" x="-45%" y="-45%" width="190%" height="190%" color-interpolation-filters="sRGB">
+        <feFlood flood-color="#477d6e" result="tone"/>
+        <feComposite in="tone" in2="SourceAlpha" operator="in" result="mark"/>
+        <feGaussianBlur in="mark" stdDeviation="3" result="glow-near"/>
+        <feGaussianBlur in="mark" stdDeviation="9" result="glow-far"/>
+        <feMerge>
+          <feMergeNode in="glow-far"/>
+          <feMergeNode in="glow-near"/>
+          <feMergeNode in="mark"/>
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
+  <header class="shell">
+    <nav aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="ESRA home"><img class="brand-logo" src="assets/logo-sign.svg" alt="" width="38" height="38"><span>ESRA</span></a>
+      <div class="nav-links"><a href="#architecture">Architecture</a><a href="#cycle">Cycle</a><a href="#evidence">Evidence</a><a class="nav-cta github-link" href="https://github.com/rrpauls/esra" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .7a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2.23c-3.22.7-3.9-1.37-3.9-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.74-1.55-2.57-.3-5.27-1.29-5.27-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.16 1.18a10.9 10.9 0 0 1 5.76 0c2.19-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.7 5.39-5.28 5.68.42.36.79 1.06.79 2.14v3.26c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg><span>View on GitHub</span></a></div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="reveal">
+        <div class="eyebrow">Evolutionary Self-Recursive Architecture</div>
+        <h1>Improve the <span>improvement.</span></h1>
+        <p class="lede">ESRA turns agent self-improvement from an assumption into a bounded, observable process. ESRA Agents makes that process portable across AI hosts—without giving autonomy a blank cheque.</p>
+        <div class="hero-actions"><a class="button primary" href="#cycle">Explore the cycle</a><a class="button" href="https://github.com/rrpauls/esra-agents" target="_blank" rel="noreferrer">Get ESRA Agents</a></div>
+        <p class="micro">OPEN SPECIFICATION · APACHE-2.0</p>
+      </div>
+      <div class="signal" aria-label="ESRA system model">
+        <div class="signal-core"><img src="assets/logo-wireframe-inverse-sign.svg" alt="ESRA wireframe logo" width="156" height="156" decoding="async"></div>
+        <span class="orbit outer o1">observe</span><span class="orbit middle o2">trigger</span><span class="orbit outer o3">propose</span><span class="orbit middle o4">align</span><span class="orbit outer o5">experiment</span><span class="orbit middle o6">evaluate</span><span class="orbit outer o7">promote</span><span class="orbit middle o8">learn</span>
+      </div>
+    </section>
+
+    <section id="architecture" class="divider">
+      <div class="shell reveal">
+        <div class="section-head"><div class="section-kicker">Two layers, one contract</div><div><h2>A specification and the implementation that proves it.</h2><p>The boundary is deliberate: ESRA defines what reliable evolution means. ESRA Agents implements the portable skills, runtime behavior, evidence records, and thin host adapters.</p></div></div>
+        <div class="duo">
+          <article class="card"><div class="card-number">01</div><h3>ESRA</h3><p>The runtime-neutral architecture: contracts, schemas, benchmarks, safety boundaries, and the protocol for one auditable improvement cycle.</p><a href="https://github.com/rrpauls/esra" target="_blank" rel="noreferrer">Read the specification</a></article>
+          <article class="card"><div class="card-number">02</div><h3>ESRA Agents</h3><p>The canonical cross-host implementation: five selective skills, a dependency-free runtime, guarded promotion, export, and adapters that stay thin by design.</p><a href="https://github.com/rrpauls/esra-agents" target="_blank" rel="noreferrer">Explore the implementation</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="cycle" class="divider">
+      <div class="shell cycle-wrap reveal">
+        <div class="cycle-copy"><div class="section-kicker">The bounded loop</div><h2>One cycle. Eight disciplined moves.</h2><p>Select a stage to see how ESRA moves from observation to learning while preserving intent, evidence, and rollback.</p><div class="stage-list" role="list" aria-label="ESRA cycle stages"></div></div>
+        <div class="terminal" aria-live="polite"><div class="terminal-top"><i></i><i></i><i></i></div><div class="terminal-body"><div class="term-path">cycle://esra/1.2</div><div class="term-index" id="termIndex">STAGE 01 / 08</div><h3 id="termTitle">Observe</h3><p class="term-text" id="termText">Capture a concrete signal: a failure, anomaly, recurring friction, or opportunity. Record what happened without inventing an explanation.</p><div class="term-gate"><span>OUTPUT <strong id="termOutput">evidence record</strong></span><span>CONTROL <strong id="termControl">no mutation</strong></span></div></div></div>
+      </div>
+    </section>
+
+    <section class="divider">
+      <div class="shell reveal">
+        <div class="section-head"><div class="section-kicker">Design discipline</div><div><h2>Autonomy that earns its next step.</h2><p>Routine work bypasses ESRA. Significant improvement moves through explicit gates, and protected surfaces remain under human control.</p></div></div>
+        <div class="principles">
+          <article class="principle"><b>01</b><h3>Selective, not constant</h3><p>Use ESRA when the stakes or learning value justify a cycle—not as ceremony around ordinary work.</p></article>
+          <article class="principle"><b>02</b><h3>Evidence before promotion</h3><p>Proposals are tested against a declared hypothesis, evaluation method, and success threshold.</p></article>
+          <article class="principle"><b>03</b><h3>Exact revision control</h3><p>Only the revision that was evaluated can be authorized for guarded local promotion.</p></article>
+          <article class="principle"><b>04</b><h3>Privacy by construction</h3><p>Persist allowlisted metadata and hashes—not prompts, transcripts, tool payloads, secrets, or raw run IDs.</p></article>
+          <article class="principle"><b>05</b><h3>Thin host adapters</h3><p>Portable contracts stay neutral while lifecycle events, permissions, and paths remain host-specific.</p></article>
+          <article class="principle"><b>06</b><h3>Rollback is part of learning</h3><p>Canary rollout and recovery evidence are first-class parts of the improvement record.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence" class="divider">
+      <div class="shell proof reveal">
+        <div><div class="section-kicker">Current evidence</div><h2>Built to separate “works” from “proven.”</h2><p>ESRA’s status language stays intentionally precise. Package checks, conformance, and isolated host tests are useful evidence; none of them silently become a universal production claim.</p><div class="boundary">Native host maturity remains evidence-gated. Stable autonomous capability requires the shared host gate and a seven-day soak.</div></div>
+        <div class="status-list" aria-label="Current ESRA status">
+          <div class="status-row"><span>ESRA specification</span><span class="chip">verified</span></div>
+          <div class="status-row"><span>Portable core and evidence export</span><span class="chip">verified</span></div>
+          <div class="status-row"><span>Guarded skill promotion</span><span class="chip">verified locally</span></div>
+          <div class="status-row"><span>OpenClaw native adapter</span><span class="chip open">prerelease</span></div>
+          <div class="status-row"><span>Hermes and Antigravity packages</span><span class="chip open">gated</span></div>
+          <div class="status-row"><span>ChatGPT / Codex portable skills</span><span class="chip">available</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta divider">
+      <div class="shell"><div class="cta-box reveal"><div><div class="section-kicker">Start with the contract</div><h2>Make improvement inspectable.</h2></div><div class="cta-copy"><p>Read the architecture, choose a host, and verify every claim at the boundary where it is supposed to hold.</p><div class="hero-actions"><a class="button primary" href="https://github.com/rrpauls/esra" target="_blank" rel="noreferrer">Open ESRA</a><a class="button" href="https://github.com/rrpauls/esra-agents" target="_blank" rel="noreferrer">Open ESRA Agents</a></div></div></div></div>
+    </section>
+  </main>
+
+  <footer class="shell"><span>ESRA · Evolutionary Self-Recursive Architecture</span><span>Open source under Apache-2.0</span></footer>
+
+  <script>
+    const stages=[
+      {title:'Observe',text:'Capture a concrete signal: a failure, anomaly, recurring friction, or opportunity. Record what happened without inventing an explanation.',output:'evidence record',control:'no mutation'},
+      {title:'Trigger',text:'Decide whether the signal warrants a full ESRA cycle. Routine work exits here; recursion guards prevent a cycle from spawning itself.',output:'trigger decision',control:'bounded entry'},
+      {title:'Propose',text:'State one specific improvement hypothesis, the intended benefit, the affected surface, and the conditions under which it should be rejected.',output:'candidate revision',control:'one hypothesis'},
+      {title:'Align',text:'Check the proposal against user intent, values, safety boundaries, scope, privacy rules, and protected surfaces before any experiment begins.',output:'alignment record',control:'human boundary'},
+      {title:'Experiment',text:'Run the smallest reversible test that can distinguish the proposal from the current behavior. Keep the change isolated and measurable.',output:'experiment card',control:'safe sandbox'},
+      {title:'Evaluate',text:'Use declared criteria, replay, or blind evaluation. Separate observed results from interpretation and keep failure evidence.',output:'evaluation receipt',control:'evidence gate'},
+      {title:'Promote',text:'Authorize only the exact evaluated revision with a one-time token. Use a canary when host-native mutation is available.',output:'promotion token',control:'exact revision'},
+      {title:'Learn',text:'Retain the compact lesson, monitor the canary, and roll back on regression. The cycle closes with evidence, not confidence theater.',output:'audit trail',control:'canary + rollback'}
+    ];
+    const list=document.querySelector('.stage-list');
+    stages.forEach((stage,index)=>{const button=document.createElement('button');button.className='stage'+(index===0?' active':'');button.type='button';button.textContent=String(index+1).padStart(2,'0')+'  '+stage.title;button.addEventListener('click',()=>{document.querySelectorAll('.stage').forEach(item=>item.classList.remove('active'));button.classList.add('active');document.querySelector('#termIndex').textContent='STAGE '+String(index+1).padStart(2,'0')+' / 08';document.querySelector('#termTitle').textContent=stage.title;document.querySelector('#termText').textContent=stage.text;document.querySelector('#termOutput').textContent=stage.output;document.querySelector('#termControl').textContent=stage.control;});list.appendChild(button)});
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('seen');observer.unobserve(entry.target)}}),{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  </script>
+</body>
+</html>
